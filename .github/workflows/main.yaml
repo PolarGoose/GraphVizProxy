@@ -1,0 +1,20 @@
+on: push
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: Build/Publish/*.nupkg
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libgraphviz-dev
+      - shell: pwsh
+        run: ./build.ps1

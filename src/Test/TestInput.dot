@@ -1,0 +1,31 @@
+digraph G {
+  label = "Test Graph Label";
+
+  subgraph cluster0 {
+    style=filled;
+    color=lightgrey;
+    node [style=filled,color=white, shape=egg];
+
+    a1 [fillcolor="red:blue", gradientangle=90];
+
+    a0 -> a1 -> a2 -> a3;
+    label = "process #1";
+  }
+
+  subgraph cluster1 {
+    node [style=filled, shape=circle];
+    b0 -> b1 -> b2 -> b3;
+    label = "process #2";
+    color=blue
+  }
+  start -> a0;
+  start -> b0;
+  a1 -> b3 [label="label line", dir=both, headlabel="End", taillabel="Start"]
+  b2 -> a3;
+  a3 -> a0;
+  a3 -> end;
+  b3 -> end;
+
+  start [shape=Mdiamond];
+  end [shape=Msquare];
+}

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.ConsoleRunner" Version="3.19.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GraphvizProxy\GraphVizProxy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestComplexInput.dot">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestInput.dot">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="DownloadGraphviz" BeforeTargets="BeforeBuild" Condition="!Exists('$(BuildFolder)/Graphviz.zip')">
+    <DownloadFile SourceUrl="https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/12.2.1/windows_10_cmake_Release_Graphviz-12.2.1-win64.zip" DestinationFolder="$(BuildFolder)" DestinationFileName="Graphviz.zip" />
+    <Unzip SourceFiles="$(BuildFolder)Graphviz.zip" DestinationFolder="$(BuildFolder)" />
+  </Target>
+  <Target Name="CopyGraphvizBinariesToOutputFolder" AfterTargets="DownloadGraphviz" BeforeTargets="BeforeBuild" Condition="!Exists('$(OutputPath)GraphViz_Binaries')">
+    <ItemGroup>
+      <GraphVizBinaries Include="$(BuildFolder)/Graphviz-*/bin/*.dll;$(BuildFolder)/Graphviz-*/bin/config6" />
+    </ItemGroup>
+    <MakeDir Directories="$(OutputPath)GraphViz_Binaries" />
+    <Copy SourceFiles="@(GraphVizBinaries)" DestinationFolder="$(OutputPath)GraphViz_Binaries" />
+  </Target>
+</Project>
